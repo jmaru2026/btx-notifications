@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <CustomAction
+        Title="BtxNotifications"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ClientSideComponentId="3edbc777-c212-4412-9363-09c52d4a3974"
+        ClientSideComponentProperties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </CustomAction>
+</Elements>
