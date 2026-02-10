@@ -5,29 +5,26 @@ export default class ToastManager {
   private container: HTMLElement;
 
   constructor() {
-
     this.container = document.createElement('div');
     this.container.className = 'btxToastContainer';
-
     document.body.appendChild(this.container);
   }
 
   public showToast(data: any) {
 
-    const toast = document.createElement('div');
-    toast.className = 'btxToast';
+    const el = document.createElement('div');
+    el.className = 'btxToast';
 
-    toast.innerHTML = `
+    el.innerHTML = `
       <div class="btxTitle">${data.Title}</div>
       <div class="btxDesc">${data.Description || ''}</div>
-      ${data.Link ? `<a href="${data.Link.Url}" target="_blank" class="btxBtn">Open</a>` : ''}
     `;
 
-    this.container.appendChild(toast);
+    this.container.appendChild(el);
 
     setTimeout(() => {
-      toast.classList.add('hide');
-      setTimeout(() => toast.remove(), 300);
+      el.classList.add('hide');
+      setTimeout(() => el.remove(), 300);
     }, 10000);
   }
 }

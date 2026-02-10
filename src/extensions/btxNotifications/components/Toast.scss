@@ -1,65 +1,92 @@
-/* header icon */
-.btxBellWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-right: 8px;
-}
-
+/* bell */
 .btxBellBtn {
   background: transparent;
   border: none;
+  width: 36px;
+  height: 100%;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
 }
 
-.btxBellBtn:hover {
-  background: rgba(255,255,255,.2);
+/* badge */
+.btxBadge {
+  background-color: #c82323;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  height: 20px;
+  left: 20px;
+  top: 4px;
+  width: 20px;
+  z-index: 1;
+  padding: 0px;
+  line-height: 2;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  display: none;
 }
 
-/* dropdown panel */
+/* panel */
 .btxPanel {
   display: none;
   position: absolute;
   right: 0;
-  top: 36px;
-  width: 320px;
-  max-height: 400px;
-  overflow: auto;
+  top: 40px;
+  width: 330px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0,0,0,.15);
-  padding: 8px;
-  z-index: 99999;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
+  padding: 10px;
 }
 
 .btxPanel.show {
-  display: block;
+  display: block
 }
 
+/* header */
+.btxPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #c82323;
+}
+
+/* items */
 .btxItem {
   padding: 10px;
   border-radius: 8px;
-  cursor: pointer;
 }
 
 .btxItem:hover {
-  background: #f3f3f3;
+  background: #f5f5f5;
 }
 
 .btxTitle {
-  font-weight: 600;
-  font-size: 13px;
+  color: #c82323;
+  font-weight: 600
 }
 
 .btxDesc {
-  font-size: 12px;
-  color: #666;
+  color: #000;
+  font-size: 13px
 }
 
-.btxEmpty {
-  text-align: center;
-  padding: 20px;
-  color: #999;
+/* toast */
+.btxToastContainer {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+}
+
+.btxToast {
+  background: white;
+  border-left: 4px solid #c82323;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+}
+
+#btxBellWrapper {
+  position: relative;
 }
