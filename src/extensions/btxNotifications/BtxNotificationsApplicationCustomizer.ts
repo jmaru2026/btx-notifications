@@ -147,23 +147,23 @@ private async _checkNew() {
 
   if (!items.length) return;
 
-  // first time → just store max id
+  const newestId = items[0].Id; // because sorted desc
+
+  // first load
   if (this._lastMaxId === 0) {
-    this._lastMaxId = Math.max(...items.map(x => x.Id));
+    this._lastMaxId = newestId;
     this._allItems = items;
     this._renderPanel();
     this._updateBadge();
     return;
   }
 
-  // find only new ones
+  // only new items
   const newItems = items.filter(x => x.Id > this._lastMaxId);
 
-  // show toast
   newItems.forEach(x => this._toast.showToast(x));
 
-  // update max id
-  this._lastMaxId = Math.max(...items.map(x => x.Id));
+  this._lastMaxId = newestId;
 
   this._allItems = items;
 
@@ -198,7 +198,7 @@ private async _checkNew() {
 
     panel.appendChild(header);
 
-    const list = this._allItems.slice(0, 4);
+    const list = this._allItems.slice(0, 5);
 
     list.forEach(n => {
 

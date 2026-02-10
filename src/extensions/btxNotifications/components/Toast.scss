@@ -129,3 +129,75 @@
 .btxClose{
   cursor: pointer;
 }
+
+
+/* =========================================
+   MOBILE RESPONSIVE
+   (max-width: 768px)
+========================================= */
+
+@media (max-width: 768px) {
+
+  /* ---------- Bell bigger touch area ---------- */
+  .btxBellBtn {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* ---------- Badge adjust ---------- */
+  .btxBadge {
+    top: 2px;
+    left: 24px;
+    font-size: 10px;
+  }
+
+  /* ---------- Panel full width card ---------- */
+  .btxPanel {
+    position: fixed;          /* important */
+    right: 10px;
+    left: 10px;               /* full width */
+    top: 60px;
+
+    width: 80%;
+    max-height: 70vh;         /* scroll safe */
+
+    border-radius: 14px;
+    padding: 10px;
+
+    overflow-y: auto;
+  }
+
+  /* ---------- Items spacing ---------- */
+  .btxItem {
+    padding: 12px;
+  }
+
+  .btxTitle {
+    font-size: 14px;
+  }
+
+  .btxDesc {
+    font-size: 13px;
+  }
+
+  /* ---------- Toast full width ---------- */
+  .btxToastContainer {
+    left: 10px;
+    right: 10px;
+    width: auto;
+    top: 65px;
+  }
+
+  .btxToast {
+    width: 100%;
+    padding: 14px 16px;
+  }
+
+  /* ---------- View all centered ---------- */
+  .btxViewAll {
+    float: none;
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+  }
+}
