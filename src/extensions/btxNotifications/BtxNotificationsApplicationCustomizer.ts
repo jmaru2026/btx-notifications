@@ -169,7 +169,8 @@ export default class BtxNotificationsApplicationCustomizer
     const viewAll = document.createElement('a');
     viewAll.className = 'btxViewAll';
     viewAll.innerText = 'View All';
-    viewAll.href = '/sites/BTXHub/Lists/BtxNotifications';
+    viewAll.href = 'https://saisystemstech.sharepoint.com/sites/BTXHub/Lists/BtxNotifications/AllItems.aspx?viewid=b98ffcde%2Df324%2D4776%2Db67e%2D02bac3c549a6';
+    viewAll.target='_blank'
 
     panel.appendChild(viewAll);
   }
