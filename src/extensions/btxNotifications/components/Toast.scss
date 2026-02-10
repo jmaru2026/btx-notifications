@@ -36,7 +36,8 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
-  padding: 10px;
+  padding: 5px 10px 5px 10px;
+  font-family: Segoe UI, sans-serif;
 }
 
 .btxPanel.show {
@@ -49,6 +50,7 @@
   justify-content: space-between;
   font-weight: 600;
   color: #c82323;
+  line-height: 2.5;
 }
 
 /* items */
@@ -63,12 +65,16 @@
 
 .btxTitle {
   color: #c82323;
-  font-weight: 600
+  font-weight: 600;
+  line-height: 1.5;
+  text-wrap: auto;
 }
 
 .btxDesc {
   color: #000;
-  font-size: 13px
+  font-size: 13px;
+  line-height: 1.5;
+  text-wrap: auto;
 }
 
 /* toast */
@@ -89,4 +95,12 @@
 
 #btxBellWrapper {
   position: relative;
+}
+.btxViewAll{
+  float: right;
+  line-height: 2;
+  font-size: 14px;
+}
+.btxClose{
+  cursor: pointer;
 }

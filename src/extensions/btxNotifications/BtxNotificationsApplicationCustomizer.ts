@@ -160,16 +160,16 @@ export default class BtxNotificationsApplicationCustomizer
         <div class="btxDesc">${n.Description || ''}</div>
       `;
 
-      if (n.Link?.Url)
-        row.onclick = () => window.open(n.Link.Url, '_blank');
+      if (n?.Link)
+        row.onclick = () => window.open(n?.Link, '_blank');
 
       panel.appendChild(row);
     });
 
     const viewAll = document.createElement('a');
     viewAll.className = 'btxViewAll';
-    viewAll.innerText = 'View all notifications';
-    viewAll.href = '/sites/yourSite/Lists/BtxNotifications';
+    viewAll.innerText = 'View All';
+    viewAll.href = '/sites/BTXHub/Lists/BtxNotifications';
 
     panel.appendChild(viewAll);
   }
