@@ -10,8 +10,6 @@ export default class BtxNotificationsApplicationCustomizer
   private _toast!: ToastManager;
 
   private _observer?: MutationObserver;
-  // private _interval?: number;
-  private _lastCheck = new Date();
 
   private _allItems: any[] = [];
   _interval: number;
@@ -106,22 +104,57 @@ export default class BtxNotificationsApplicationCustomizer
   /* ---------------------------------------
      NEW → TOAST
   --------------------------------------- */
-  private async _checkNew() {
+  // private async _checkNew() {
 
-    const items = await this._service.getNotifications();
+  //   const items = await this._service.getNotifications();
 
-    const newItems = items.filter(x =>
-      new Date(x.Created) > this._lastCheck
-    );
+  //   const newItems = items.filter(x =>
+  //     new Date(x.Created) > this._lastCheck
+  //   );
 
-    newItems.forEach(x => this._toast.showToast(x));
+  //   newItems.forEach(x => this._toast.showToast(x));
 
-    this._lastCheck = new Date();
+  //   this._lastCheck = new Date();
+  //   this._allItems = items;
+
+  //   this._renderPanel();
+  //   this._updateBadge();
+  // }
+  private _previousCount = 0;
+
+private async _checkNew() {
+
+  const items = await this._service.getNotifications();
+
+  const newCount = items.length;
+
+  // first load → don't toast
+  if (this._previousCount === 0) {
+    this._previousCount = newCount;
     this._allItems = items;
-
     this._renderPanel();
     this._updateBadge();
+    return;
   }
+
+  // new items added
+  if (newCount > this._previousCount) {
+
+    const diff = newCount - this._previousCount;
+
+    // show ONLY latest added items
+    const newItems = items.slice(0, diff);
+
+    newItems.forEach(x => this._toast.showToast(x));
+  }
+
+  this._previousCount = newCount;
+  this._allItems = items;
+
+  this._renderPanel();
+  this._updateBadge();
+}
+
 
   /* ---------------------------------------
      PANEL RENDER
