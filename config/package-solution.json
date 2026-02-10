@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
     "name": "btx-notifications-client-side-solution",
-    "id": "772e3612-b340-4a26-9cdb-48d062c00f48",
+    "id": "424cd2dd-05db-40a7-ac6d-00d6c6ae22c4",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
@@ -12,14 +12,14 @@
       "websiteUrl": "",
       "privacyUrl": "",
       "termsOfUseUrl": "",
-      "mpnId": "Undefined-1.22.1"
+      "mpnId": "Undefined-1.20.0"
     },
     "metadata": {
       "shortDescription": {
-        "default": "btx-notifications description"
+        "default": "btxNotifications description"
       },
       "longDescription": {
-        "default": "btx-notifications description"
+        "default": "btxNotifications description"
       },
       "screenshotPaths": [],
       "videoUrl": "",
@@ -29,7 +29,7 @@
       {
         "title": "Application Extension - Deployment of custom action",
         "description": "Deploys a custom action with ClientSideComponentId association",
-        "id": "de040070-dc29-4abe-a140-d31fbde778e5",
+        "id": "651b527c-9807-4713-b4a2-6141de719e29",
         "version": "1.0.0.0",
         "assets": {
           "elementManifests": [

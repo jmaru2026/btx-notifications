@@ -3,7 +3,7 @@
     <CustomAction
         Title="BtxNotifications"
         Location="ClientSideExtension.ApplicationCustomizer"
-        ClientSideComponentId="3edbc777-c212-4412-9363-09c52d4a3974"
+        ClientSideComponentId="a34689a5-2f99-47e0-889b-ec15a4c6dd62"
         ClientSideComponentProperties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
     </CustomAction>
 </Elements>

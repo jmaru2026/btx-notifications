@@ -6,7 +6,7 @@
     "default": {
       "pageUrl": "https://{tenantDomain}/SitePages/myPage.aspx",
       "customActions": {
-        "3edbc777-c212-4412-9363-09c52d4a3974": {
+        "a34689a5-2f99-47e0-889b-ec15a4c6dd62": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"
@@ -17,7 +17,7 @@
     "btxNotifications": {
       "pageUrl": "https://{tenantDomain}/SitePages/myPage.aspx",
       "customActions": {
-        "3edbc777-c212-4412-9363-09c52d4a3974": {
+        "a34689a5-2f99-47e0-889b-ec15a4c6dd62": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"

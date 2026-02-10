@@ -3,7 +3,7 @@
     <ClientSideComponentInstance
         Title="BtxNotifications"
         Location="ClientSideExtension.ApplicationCustomizer"
-        ComponentId="3edbc777-c212-4412-9363-09c52d4a3974"
+        ComponentId="a34689a5-2f99-47e0-889b-ec15a4c6dd62"
         Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
     </ClientSideComponentInstance>
 </Elements>
