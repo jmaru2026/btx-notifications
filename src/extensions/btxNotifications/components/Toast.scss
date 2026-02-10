@@ -1,0 +1,58 @@
+.btxBellIcon {
+  position: fixed;
+  top: 14px;
+  right: 80px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.btxToastContainer {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  width: 320px;
+  z-index: 99999;
+}
+
+.btxToast {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  animation: slideIn .3s ease;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.btxTitle {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.btxDesc {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.btxBtn {
+  background: #c82323;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.btxToast.hide {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: .3s;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(50px); opacity: 0 }
+  to { transform: translateX(0); opacity: 1 }
+}
