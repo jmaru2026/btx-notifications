@@ -104,56 +104,73 @@ export default class BtxNotificationsApplicationCustomizer
   /* ---------------------------------------
      NEW → TOAST
   --------------------------------------- */
+
+  // private _previousCount = 0;
+
   // private async _checkNew() {
 
   //   const items = await this._service.getNotifications();
 
-  //   const newItems = items.filter(x =>
-  //     new Date(x.Created) > this._lastCheck
-  //   );
+  //   const newCount = items.length;
 
-  //   newItems.forEach(x => this._toast.showToast(x));
+  //   // first load → don't toast
+  //   if (this._previousCount === 0) {
+  //     this._previousCount = newCount;
+  //     this._allItems = items;
+  //     this._renderPanel();
+  //     this._updateBadge();
+  //     return;
+  //   }
 
-  //   this._lastCheck = new Date();
+  //   // new items added
+  //   if (newCount > this._previousCount) {
+
+  //     const diff = newCount - this._previousCount;
+
+  //     // show ONLY latest added items
+  //     const newItems = items.slice(0, diff);
+
+  //     newItems.forEach(x => this._toast.showToast(x));
+  //   }
+
+  //   this._previousCount = newCount;
   //   this._allItems = items;
 
   //   this._renderPanel();
   //   this._updateBadge();
   // }
-  private _previousCount = 0;
+  private _lastMaxId = 0;
 
 private async _checkNew() {
 
   const items = await this._service.getNotifications();
 
-  const newCount = items.length;
+  if (!items.length) return;
 
-  // first load → don't toast
-  if (this._previousCount === 0) {
-    this._previousCount = newCount;
+  // first time → just store max id
+  if (this._lastMaxId === 0) {
+    this._lastMaxId = Math.max(...items.map(x => x.Id));
     this._allItems = items;
     this._renderPanel();
     this._updateBadge();
     return;
   }
 
-  // new items added
-  if (newCount > this._previousCount) {
+  // find only new ones
+  const newItems = items.filter(x => x.Id > this._lastMaxId);
 
-    const diff = newCount - this._previousCount;
+  // show toast
+  newItems.forEach(x => this._toast.showToast(x));
 
-    // show ONLY latest added items
-    const newItems = items.slice(0, diff);
+  // update max id
+  this._lastMaxId = Math.max(...items.map(x => x.Id));
 
-    newItems.forEach(x => this._toast.showToast(x));
-  }
-
-  this._previousCount = newCount;
   this._allItems = items;
 
   this._renderPanel();
   this._updateBadge();
 }
+
 
 
   /* ---------------------------------------
@@ -181,7 +198,7 @@ private async _checkNew() {
 
     panel.appendChild(header);
 
-    const list = this._allItems.slice(0, 8);
+    const list = this._allItems.slice(0, 4);
 
     list.forEach(n => {
 
@@ -203,7 +220,7 @@ private async _checkNew() {
     viewAll.className = 'btxViewAll';
     viewAll.innerText = 'View All';
     viewAll.href = 'https://saisystemstech.sharepoint.com/sites/BTXHub/Lists/BtxNotifications/AllItems.aspx?viewid=b98ffcde%2Df324%2D4776%2Db67e%2D02bac3c549a6';
-    viewAll.target='_blank'
+    viewAll.target = '_blank'
 
     panel.appendChild(viewAll);
   }
