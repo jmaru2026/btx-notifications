@@ -375,14 +375,13 @@ export default class BtxNotificationsApplicationCustomizer
     });
 
     const viewAll = document.createElement('a');
-
     viewAll.className = 'btxViewAll';
-    viewAll.innerText = 'View All Previous Notifications.';
+    viewAll.innerText = 'View All Previous Notifications';
     viewAll.href = 'https://btxair.sharepoint.com/sites/BTXHubUAT/SitePages/Notifications.aspx';
+    viewAll.target = '_blank'
+    viewAll.rel = 'noopener noreferrer'
 
-    viewAll.target = '_blank';
-    viewAll.rel = 'noopener noreferrer'; // ⭐ VERY IMPORTANT
-
+    panel.appendChild(viewAll);
     this._checkEmptyState();
 
   }
@@ -429,7 +428,14 @@ export default class BtxNotificationsApplicationCustomizer
     </div>
   `;
 
-    panel.appendChild(empty);
+    // ⭐ insert BEFORE ViewAll link
+    const viewAll = panel.querySelector('.btxViewAll');
+
+    if (viewAll) {
+      panel.insertBefore(empty, viewAll);
+    } else {
+      panel.appendChild(empty);
+    }
   }
 
 }
