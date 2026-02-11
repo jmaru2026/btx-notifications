@@ -79,6 +79,20 @@ export default class BtxNotificationsApplicationCustomizer
 ===================================== */
 
   private _storageKey = 'BtxNotifications_ReadIds';
+  private _hiddenKey = 'BtxNotifications_HiddenIds';
+  private _getHiddenIds(): number[] {
+    const raw = localStorage.getItem(this._hiddenKey);
+    return raw ? JSON.parse(raw).map((x: any) => Number(x)) : [];
+  }
+
+  private _markHidden(id: number) {
+    const ids = this._getHiddenIds();
+    if (ids.indexOf(id) === -1) {
+      ids.push(id);
+      localStorage.setItem(this._hiddenKey, JSON.stringify(ids));
+    }
+  }
+
 
   private _getReadIds(): number[] {
 
@@ -104,12 +118,13 @@ export default class BtxNotificationsApplicationCustomizer
   }
 
 
-  private _filterUnread(items: any[]): any[] {
+  private _filterVisible(items: any[]): any[] {
 
-    const readIds = this._getReadIds();
+    const hiddenIds = this._getHiddenIds();
 
-    return items.filter(x => readIds.indexOf(x.Id) === -1);
+    return items.filter(x => hiddenIds.indexOf(x.Id) === -1);
   }
+
 
 
   /* ---------------------------------------ß
@@ -136,7 +151,7 @@ export default class BtxNotificationsApplicationCustomizer
 
     // this._allItems = await this._service.getNotifications();
     const items = await this._service.getNotifications();
-    this._allItems = this._filterUnread(items);
+    this._allItems = this._filterVisible(items);
 
     this._renderPanel();
     this._updateBadge();
@@ -147,38 +162,83 @@ export default class BtxNotificationsApplicationCustomizer
   --------------------------------------- */
   private _lastMaxId = 0;
 
+  // private async _checkNew() {
+
+  //   const items = await this._service.getNotifications();
+
+  //   if (!items.length) return;
+
+  //   const newestId = items[0].Id; // because sorted desc
+
+  //   // first load
+  //   if (this._lastMaxId === 0) {
+  //     this._lastMaxId = newestId;
+  //     // this._allItems = items;
+  //     this._allItems = this._filterUnread(items);
+  //     this._renderPanel();
+  //     this._updateBadge();
+  //     return;
+  //   }
+
+  //   // only new items
+  //   const newItems = items.filter(x => x.Id > this._lastMaxId);
+
+  //   newItems.forEach(x => this._toast.showToast(x));
+
+  //   this._lastMaxId = newestId;
+
+  //   // this._allItems = items;
+  //   this._allItems = this._filterUnread(items);
+
+
+  //   this._renderPanel();
+  //   this._updateBadge();
+  // }
   private async _checkNew() {
 
     const items = await this._service.getNotifications();
 
     if (!items.length) return;
 
-    const newestId = items[0].Id; // because sorted desc
+    const newestId = items[0].Id; // sorted desc
 
-    // first load
+    /* ---------- FIRST LOAD ---------- */
     if (this._lastMaxId === 0) {
+
       this._lastMaxId = newestId;
-      // this._allItems = items;
-      this._allItems = this._filterUnread(items);
+
+      // ⭐ ONLY hide trash
+      this._allItems = this._filterVisible(items);
+
       this._renderPanel();
       this._updateBadge();
       return;
     }
 
-    // only new items
-    const newItems = items.filter(x => x.Id > this._lastMaxId);
+    /* ---------- NEW ITEMS (toast only unread) ---------- */
+
+    const readIds = this._getReadIds();
+    const hiddenIds = this._getHiddenIds();
+
+    const newItems = items.filter(x =>
+      x.Id > this._lastMaxId &&
+      readIds.indexOf(x.Id) === -1 &&
+      hiddenIds.indexOf(x.Id) === -1
+    );
 
     newItems.forEach(x => this._toast.showToast(x));
 
     this._lastMaxId = newestId;
 
-    // this._allItems = items;
-    this._allItems = this._filterUnread(items);
+    /* ---------- UPDATE PANEL ---------- */
 
+    // ⭐ ONLY hide trash (NOT read)
+    this._allItems = this._filterVisible(items);
 
     this._renderPanel();
     this._updateBadge();
   }
+
 
   private _formatDate(dateString: string): string {
 
@@ -219,10 +279,12 @@ export default class BtxNotificationsApplicationCustomizer
   --------------------------------------- */
   private _renderPanel() {
 
+
     const panel = document.getElementById('btxPanel');
     if (!panel) return;
 
     panel.innerHTML = '';
+
 
     const header = document.createElement('div');
     header.className = 'btxPanelHeader';
@@ -246,90 +308,100 @@ export default class BtxNotificationsApplicationCustomizer
       const row = document.createElement('div');
       row.className = 'btxItem';
 
-      // row.innerHTML = `
-      //   <div class="btxTitle">${n.Title}</div>
-      //   <div class="btxDesc">${n.Description || ''}</div>
-      //   <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
+      const readIds = this._getReadIds();
 
-      //   <span class="btxTrash" title="Dismiss">🗑</span>
+      if (readIds.indexOf(n.Id) === -1) {
+        row.classList.add('btxUnread');
+      } else {
+        row.classList.add('btxRead');
+      }
+
+
+
+      //       row.innerHTML = `
+      //   <div class="btxRowContent">
+      //       <div class="btxText">
+      //           <div class="btxTitle">${n.Title}</div>
+      //           <div class="btxDesc">${n.Description || ''}</div>
+      //           <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
+      //       </div>
+
+      //       <span class="btxTrash" title="Dismiss">{<Icon iconName="Delete" /></span>
+      //   </div>
       // `;
       row.innerHTML = `
-  <div class="btxRowContent">
-      <div class="btxText">
-          <div class="btxTitle">${n.Title}</div>
-          <div class="btxDesc">${n.Description || ''}</div>
-          <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
-      </div>
+        <div class="btxRowContent">
+            <div class="btxText">
+                <div class="btxTitle">${n.Title}</div>
+                <div class="btxDesc">${n.Description || ''}</div>
+                <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
+            </div>
 
-      <span class="btxTrash" title="Dismiss">🗑</span>
-  </div>
-`;
+            <span class="btxTrash ms-Icon ms-Icon--Delete" title="Dismiss"></span>
+        </div>
+      `;
 
 
-      // row.onclick = () => {
 
-      //   this._markAsRead(n.Id);
-
-      //   this._allItems = this._allItems.filter(x => x.Id !== n.Id);
-
-      //   row.remove(); // only remove clicked row
-      //   this._updateBadge();
-
-      //   if (n?.Link) {
-      //     window.open(n.Link, '_blank');
-      //   }
-      // };
       const trash = row.querySelector('.btxTrash') as HTMLElement;
 
+      /* TRASH → hide */
       trash?.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-        e.stopPropagation(); // prevent row click
-
-        this._markAsRead(n.Id);
+        this._markHidden(n.Id);
 
         this._allItems = this._allItems.filter(x => x.Id !== n.Id);
 
         row.remove();
         this._updateBadge();
-
-        this._checkEmptyState();
       });
 
 
-      // row click = open link only
+      /* ROW CLICK → mark READ only */
       row.addEventListener('click', () => {
+
+        this._markAsRead(n.Id);
+
+        row.classList.remove('btxUnread');
+        row.classList.add('btxRead');
+
         if (n?.Link) window.open(n.Link, '_blank');
+
+        this._updateBadge();
       });
-
-
-
-
-
-
 
       panel.appendChild(row);
     });
 
     const viewAll = document.createElement('a');
+
     viewAll.className = 'btxViewAll';
     viewAll.innerText = 'View All Previous Notifications.';
-    viewAll.href = 'https://saisystemstech.sharepoint.com/sites/BTXHub/SitePages/Notifications.aspx';
-    viewAll.target = '_blank'
+    viewAll.href = 'https://btxair.sharepoint.com/sites/BTXHubUAT/SitePages/Notifications.aspx';
 
-    panel.appendChild(viewAll);
+    viewAll.target = '_blank';
+    viewAll.rel = 'noopener noreferrer'; // ⭐ VERY IMPORTANT
+
     this._checkEmptyState();
 
   }
 
   private _updateBadge() {
+
     const badge = document.getElementById('btxBadge');
     if (!badge) return;
 
-    const count = this._allItems.length;
+    const readIds = this._getReadIds();
 
-    badge.innerText = count > 0 ? count.toString() : '';
-    badge.style.display = count ? 'flex' : 'none';
+    const unreadCount = this._allItems.filter(x =>
+      readIds.indexOf(x.Id) === -1
+    ).length;
+
+    badge.innerText = unreadCount > 0 ? unreadCount.toString() : '';
+    badge.style.display = unreadCount ? 'flex' : 'none';
   }
+
 
   private _bellSvg() {
     return `

@@ -54,7 +54,7 @@
 
   display: none;
 
-  box-shadow: 0 0 0 2px #fff;
+  // box-shadow: 0 0 0 2px #fff;
   /* professional look */
 }
 
@@ -164,6 +164,17 @@
   font-size: 11px;
   line-height: 1.3;
   text-wrap: auto;
+}
+
+/* unread highlight */
+.btxUnread {
+  background: #fff3f3;
+  border-left: 3px solid #c82323;
+}
+
+/* read normal */
+.btxRead {
+  background: white;
 }
 
 
@@ -336,6 +347,15 @@
     text-align: center;
     margin-top: 8px;
   }
+}
+
+
+///Extra CSS
+.o365cs-base [class*=" ms-Icon--"], .o365cs-base [class*=" ms-Icon--"]:before, .o365cs-base [class^=ms-Icon--], .o365cs-base [class^=ms-Icon--]:before {
+    font-family: ShellFabricMDL2IconsLite, ShellFabricMDL2Icons;
+    display: inline-block;
+    line-height: 1;
+    align-self: center !important;
 }
 
 
