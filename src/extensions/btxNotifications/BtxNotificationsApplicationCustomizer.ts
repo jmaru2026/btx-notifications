@@ -145,41 +145,6 @@ export default class BtxNotificationsApplicationCustomizer
   /* ---------------------------------------
      NEW → TOAST
   --------------------------------------- */
-
-  // private _previousCount = 0;
-
-  // private async _checkNew() {
-
-  //   const items = await this._service.getNotifications();
-
-  //   const newCount = items.length;
-
-  //   // first load → don't toast
-  //   if (this._previousCount === 0) {
-  //     this._previousCount = newCount;
-  //     this._allItems = items;
-  //     this._renderPanel();
-  //     this._updateBadge();
-  //     return;
-  //   }
-
-  //   // new items added
-  //   if (newCount > this._previousCount) {
-
-  //     const diff = newCount - this._previousCount;
-
-  //     // show ONLY latest added items
-  //     const newItems = items.slice(0, diff);
-
-  //     newItems.forEach(x => this._toast.showToast(x));
-  //   }
-
-  //   this._previousCount = newCount;
-  //   this._allItems = items;
-
-  //   this._renderPanel();
-  //   this._updateBadge();
-  // }
   private _lastMaxId = 0;
 
   private async _checkNew() {
@@ -281,27 +246,63 @@ export default class BtxNotificationsApplicationCustomizer
       const row = document.createElement('div');
       row.className = 'btxItem';
 
-      row.innerHTML = `
-        <div class="btxTitle">${n.Title}</div>
-        <div class="btxDesc">${n.Description || ''}</div>
-        <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
-      `;
+      // row.innerHTML = `
+      //   <div class="btxTitle">${n.Title}</div>
+      //   <div class="btxDesc">${n.Description || ''}</div>
+      //   <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
 
-      // if (n?.Link)
-      //   row.onclick = () => window.open(n?.Link, '_blank');
-      row.onclick = () => {
+      //   <span class="btxTrash" title="Dismiss">🗑</span>
+      // `;
+      row.innerHTML = `
+  <div class="btxRowContent">
+      <div class="btxText">
+          <div class="btxTitle">${n.Title}</div>
+          <div class="btxDesc">${n.Description || ''}</div>
+          <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
+      </div>
+
+      <span class="btxTrash" title="Dismiss">🗑</span>
+  </div>
+`;
+
+
+      // row.onclick = () => {
+
+      //   this._markAsRead(n.Id);
+
+      //   this._allItems = this._allItems.filter(x => x.Id !== n.Id);
+
+      //   row.remove(); // only remove clicked row
+      //   this._updateBadge();
+
+      //   if (n?.Link) {
+      //     window.open(n.Link, '_blank');
+      //   }
+      // };
+      const trash = row.querySelector('.btxTrash') as HTMLElement;
+
+      trash?.addEventListener('click', (e) => {
+
+        e.stopPropagation(); // prevent row click
 
         this._markAsRead(n.Id);
 
         this._allItems = this._allItems.filter(x => x.Id !== n.Id);
 
-        row.remove(); // only remove clicked row
+        row.remove();
         this._updateBadge();
 
-        if (n?.Link) {
-          window.open(n.Link, '_blank');
-        }
-      };
+        this._checkEmptyState();
+      });
+
+
+      // row click = open link only
+      row.addEventListener('click', () => {
+        if (n?.Link) window.open(n.Link, '_blank');
+      });
+
+
+
 
 
 
@@ -311,11 +312,13 @@ export default class BtxNotificationsApplicationCustomizer
 
     const viewAll = document.createElement('a');
     viewAll.className = 'btxViewAll';
-    viewAll.innerText = 'View All';
+    viewAll.innerText = 'View All Previous Notifications.';
     viewAll.href = 'https://saisystemstech.sharepoint.com/sites/BTXHub/SitePages/Notifications.aspx';
     viewAll.target = '_blank'
 
     panel.appendChild(viewAll);
+    this._checkEmptyState();
+
   }
 
   private _updateBadge() {
@@ -334,4 +337,27 @@ export default class BtxNotificationsApplicationCustomizer
       <path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 10-12 0v5L4 18v1h16v-1l-2-2z"/>
     </svg>`;
   }
+
+  private _checkEmptyState() {
+
+    const panel = document.getElementById('btxPanel');
+    if (!panel) return;
+
+    const items = panel.querySelectorAll('.btxItem');
+
+    if (items.length > 0) return;
+
+    const empty = document.createElement('div');
+    empty.className = 'btxEmptyState';
+
+    empty.innerHTML = `
+    <div class="btxEmptyTitle">You’re all caught up!</div>
+    <div class="btxEmptyDesc">
+      There are no new notifications at this time.
+    </div>
+  `;
+
+    panel.appendChild(empty);
+  }
+
 }
