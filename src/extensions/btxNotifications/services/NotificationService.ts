@@ -7,7 +7,7 @@ export class NotificationService {
 
   public async getNotifications(): Promise<any[]> {
 
-    const url = `${this.context.pageContext.web.absoluteUrl}/_api/web/lists/getbytitle('BtxNotifications')/items?$filter=IsActive eq 1&$select=Title,Description,Link,Created&$orderby=Created desc&$top=5000`;
+    const url = `${this.context.pageContext.web.absoluteUrl}/_api/web/lists/getbytitle('BtxNotifications')/items?$filter=IsActive eq 1&$select=Title,Description,Link,Created,ID,Id&$orderby=Created desc&$top=5000`;
 
     const res = await this.context.spHttpClient.get(url, SPHttpClient.configurations.v1);
 

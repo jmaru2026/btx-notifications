@@ -74,7 +74,45 @@ export default class BtxNotificationsApplicationCustomizer
     this._observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  /* ---------------------------------------
+  /* =====================================
+   LOCAL STORAGE HELPERS
+===================================== */
+
+  private _storageKey = 'BtxNotifications_ReadIds';
+
+  private _getReadIds(): number[] {
+
+    const raw = localStorage.getItem(this._storageKey);
+
+    if (!raw) return [];
+
+    // ⭐ force numbers
+    return JSON.parse(raw).map((x: any) => Number(x));
+  }
+
+
+  private _markAsRead(id: number) {
+
+    const readIds = this._getReadIds();
+
+    id = Number(id); // ⭐ important
+
+    if (readIds.indexOf(id) === -1) {
+      readIds.push(id);
+      localStorage.setItem(this._storageKey, JSON.stringify(readIds));
+    }
+  }
+
+
+  private _filterUnread(items: any[]): any[] {
+
+    const readIds = this._getReadIds();
+
+    return items.filter(x => readIds.indexOf(x.Id) === -1);
+  }
+
+
+  /* ---------------------------------------ß
      PANEL
   --------------------------------------- */
   private _createPanel(wrapper: HTMLElement) {
@@ -96,7 +134,10 @@ export default class BtxNotificationsApplicationCustomizer
   --------------------------------------- */
   private async _loadAll() {
 
-    this._allItems = await this._service.getNotifications();
+    // this._allItems = await this._service.getNotifications();
+    const items = await this._service.getNotifications();
+    this._allItems = this._filterUnread(items);
+
     this._renderPanel();
     this._updateBadge();
   }
@@ -141,69 +182,72 @@ export default class BtxNotificationsApplicationCustomizer
   // }
   private _lastMaxId = 0;
 
-private async _checkNew() {
+  private async _checkNew() {
 
-  const items = await this._service.getNotifications();
+    const items = await this._service.getNotifications();
 
-  if (!items.length) return;
+    if (!items.length) return;
 
-  const newestId = items[0].Id; // because sorted desc
+    const newestId = items[0].Id; // because sorted desc
 
-  // first load
-  if (this._lastMaxId === 0) {
+    // first load
+    if (this._lastMaxId === 0) {
+      this._lastMaxId = newestId;
+      // this._allItems = items;
+      this._allItems = this._filterUnread(items);
+      this._renderPanel();
+      this._updateBadge();
+      return;
+    }
+
+    // only new items
+    const newItems = items.filter(x => x.Id > this._lastMaxId);
+
+    newItems.forEach(x => this._toast.showToast(x));
+
     this._lastMaxId = newestId;
-    this._allItems = items;
+
+    // this._allItems = items;
+    this._allItems = this._filterUnread(items);
+
+
     this._renderPanel();
     this._updateBadge();
-    return;
   }
 
-  // only new items
-  const newItems = items.filter(x => x.Id > this._lastMaxId);
+  private _formatDate(dateString: string): string {
 
-  newItems.forEach(x => this._toast.showToast(x));
+    const created = new Date(dateString);
+    const now = new Date();
 
-  this._lastMaxId = newestId;
+    const diffMs = now.getTime() - created.getTime();
 
-  this._allItems = items;
+    const sec = Math.floor(diffMs / 1000);
+    const min = Math.floor(sec / 60);
+    const hr = Math.floor(min / 60);
+    const day = Math.floor(hr / 24);
 
-  this._renderPanel();
-  this._updateBadge();
-}
+    if (sec < 60) return 'Just now';
 
-private _formatDate(dateString: string): string {
+    if (min < 60)
+      return `${min} minute${min > 1 ? 's' : ''} ago`;
 
-  const created = new Date(dateString);
-  const now = new Date();
+    if (hr < 24)
+      return `${hr} hour${hr > 1 ? 's' : ''} ago`;
 
-  const diffMs = now.getTime() - created.getTime();
+    if (day === 1)
+      return 'Yesterday';
 
-  const sec = Math.floor(diffMs / 1000);
-  const min = Math.floor(sec / 60);
-  const hr = Math.floor(min / 60);
-  const day = Math.floor(hr / 24);
+    if (day < 7)
+      return `${day} days ago`;
 
-  if (sec < 60) return 'Just now';
-
-  if (min < 60)
-    return `${min} minute${min > 1 ? 's' : ''} ago`;
-
-  if (hr < 24)
-    return `${hr} hour${hr > 1 ? 's' : ''} ago`;
-
-  if (day === 1)
-    return 'Yesterday';
-
-  if (day < 7)
-    return `${day} days ago`;
-
-  // older → show date like SharePoint
-  return created.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
-}
+    // older → show date like SharePoint
+    return created.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
 
   /* ---------------------------------------
      PANEL RENDER
@@ -243,8 +287,24 @@ private _formatDate(dateString: string): string {
         <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
       `;
 
-      if (n?.Link)
-        row.onclick = () => window.open(n?.Link, '_blank');
+      // if (n?.Link)
+      //   row.onclick = () => window.open(n?.Link, '_blank');
+      row.onclick = () => {
+
+        this._markAsRead(n.Id);
+
+        this._allItems = this._allItems.filter(x => x.Id !== n.Id);
+
+        row.remove(); // only remove clicked row
+        this._updateBadge();
+
+        if (n?.Link) {
+          window.open(n.Link, '_blank');
+        }
+      };
+
+
+
 
       panel.appendChild(row);
     });
