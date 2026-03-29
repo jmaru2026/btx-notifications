@@ -29,7 +29,16 @@ export default class BtxNotificationsApplicationCustomizer
       this._checkNew();
     }, 60000);
 
+    this.context.application.navigatedEvent.add(this, () => {
+      this._onNavigated();
+    });
+
     return Promise.resolve();
+  }
+
+  private async _onNavigated(): Promise<void> {
+    await this._loadAll();
+    // console.log("_onNavigated function executed");
   }
 
   /* ---------------------------------------
@@ -334,7 +343,7 @@ export default class BtxNotificationsApplicationCustomizer
             <div class="btxText">
                 <div class="btxTitle">${n.Title}</div>
                 <div class="btxDesc">${n.Description || ''}</div>
-                <div class="CreatedDate">${this._formatDate(n?.Created) || ''}</div>
+                <div class="CreatedDate">${this._formatDate(n?.CreationDate) || ''}</div>
             </div>
 
             <span class="btxTrash ms-Icon ms-Icon--Delete" title="Dismiss"></span>
