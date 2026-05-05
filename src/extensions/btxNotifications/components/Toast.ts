@@ -57,7 +57,7 @@ export default class ToastManager {
       this._removeToast(toast);
     });
 
-    this.container.appendChild(toast);
+    //this.container.appendChild(toast);
 
     /* auto remove */
     setTimeout(() => {

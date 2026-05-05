@@ -12,7 +12,7 @@ export default class BtxNotificationsApplicationCustomizer
   private _observer?: MutationObserver;
 
   private _allItems: any[] = [];
-  _interval: number;
+  _interval: number | undefined;
 
   @override
   public async onInit(): Promise<void> {
@@ -386,7 +386,7 @@ export default class BtxNotificationsApplicationCustomizer
     const viewAll = document.createElement('a');
     viewAll.className = 'btxViewAll';
     viewAll.innerText = 'View All Previous Notifications';
-    viewAll.href = 'https://btxair.sharepoint.com/sites/BTXHubUAT/SitePages/Notifications.aspx';
+    viewAll.href = 'https://btxair.sharepoint.com/sites/BTXHub/SitePages/Notifications.aspx';
     viewAll.target = '_blank'
     viewAll.rel = 'noopener noreferrer'
 
