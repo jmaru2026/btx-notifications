@@ -12,7 +12,7 @@ export default class BtxNotificationsApplicationCustomizer
   private _observer?: MutationObserver;
 
   private _allItems: any[] = [];
-  _interval: number | undefined;
+  _interval: number;
 
   @override
   public async onInit(): Promise<void> {
